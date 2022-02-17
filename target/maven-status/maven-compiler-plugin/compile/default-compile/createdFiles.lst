@@ -1,0 +1,5 @@
+pl\com\danielsokanski\controller\MainWindowController.class
+pl\com\danielsokanski\view\MainWindow.class
+module-info.class
+pl\com\danielsokanski\Launcher.class
+pl\com\danielsokanski\model\WeatherData.class

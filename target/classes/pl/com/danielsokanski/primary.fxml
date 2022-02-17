@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="594.0" prefWidth="817.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.com.danielsokanski.controller.MainWindowController">
+   <children>
+
+      <MenuBar layoutY="-3.0" prefHeight="25.0" prefWidth="817.0">
+         <menus>
+            <Menu mnemonicParsing="false" text="File">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="Close" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Edit">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="Delete" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="About" />
+               </items>
+            </Menu>
+         </menus>
+      </MenuBar>
+      <Label layoutX="31.0" layoutY="32.0" text="Twoje miasto" />
+      <Label layoutX="454.0" layoutY="32.0" text="Szukaj miasta" />
+      <TextField fx:id="myCity" layoutX="109.0" layoutY="28.0" prefHeight="25.0" prefWidth="183.0" promptText="Wpisz nazwę twojego miasta" AnchorPane.bottomAnchor="541.0" AnchorPane.leftAnchor="109.0" AnchorPane.rightAnchor="525.0" AnchorPane.topAnchor="28.0" />
+      <TextField fx:id="newCity" layoutX="532.0" layoutY="28.0" prefHeight="25.0" prefWidth="183.0" promptText="Nazwa szukanego miasta" AnchorPane.bottomAnchor="541.0" AnchorPane.leftAnchor="532.0" AnchorPane.rightAnchor="102.0" AnchorPane.topAnchor="28.0" />
+      <Button layoutX="305.0" layoutY="28.0" mnemonicParsing="false" onAction="#searchMyCity" text="Szukaj" textAlignment="CENTER" />
+      <Button layoutX="728.0" layoutY="28.0" mnemonicParsing="false" onAction="#searchNewCity" text="Szukaj" textAlignment="CENTER" />
+      <Label fx:id="myCityName" layoutX="66.0" layoutY="69.0" prefHeight="17.0" prefWidth="274.0" />
+      <Label fx:id="searchedCityName" layoutX="480.0" layoutY="69.0" prefHeight="17.0" prefWidth="274.0" text="NAZWA SZUKANEGO MIASTA" />
+      <Label layoutX="449.0" layoutY="115.0" />
+      <Label fx:id="tomorrow" layoutX="31.0" layoutY="286.0" />
+      <Label layoutX="449.0" layoutY="286.0" text="NASTĘPNE DNI" />
+      <Label layoutX="31.0" layoutY="147.0" text="TEMPERATURA" />
+      <Label layoutX="31.0" layoutY="171.0" text="CIŚNIENIE" />
+      <Label layoutX="31.0" layoutY="196.0" text="WILGOTNOŚĆ" />
+      <Label layoutX="31.0" layoutY="221.0" text="PRĘDKOŚĆ WIATRU" />
+      <Label layoutX="449.0" layoutY="143.0" text="TEMPERATURA" />
+      <Label layoutX="449.0" layoutY="167.0" text="CIŚNIENIE" />
+      <Label layoutX="449.0" layoutY="192.0" text="WILGOTNOŚĆ" />
+      <Label layoutX="449.0" layoutY="217.0" text="PRĘDKOŚĆ WIATRU" />
+      <Label fx:id="myCityTemp" layoutX="153.0" layoutY="147.0" prefHeight="17.0" prefWidth="239.0" text="Label" />
+      <Label fx:id="myCityPressure" layoutX="153.0" layoutY="171.0" prefHeight="17.0" prefWidth="239.0" text="Label" />
+      <Label fx:id="myCityHumidity" layoutX="153.0" layoutY="196.0" prefHeight="17.0" prefWidth="239.0" text="Label" />
+      <Label fx:id="myCityWind" layoutX="153.0" layoutY="221.0" prefHeight="17.0" prefWidth="239.0" text="Label" />
+      <Label fx:id="newCityTemp" layoutX="564.0" layoutY="143.0" prefHeight="17.0" prefWidth="239.0" text="Label" />
+      <Label fx:id="newCityPressure" layoutX="564.0" layoutY="167.0" prefHeight="17.0" prefWidth="239.0" text="Label" />
+      <Label fx:id="newCityHumidity" layoutX="564.0" layoutY="192.0" prefHeight="17.0" prefWidth="239.0" text="Label" />
+      <Label fx:id="newCityWind" layoutX="564.0" layoutY="217.0" prefHeight="17.0" prefWidth="239.0" text="Label" />
+      <Label fx:id="todaysDate" layoutX="278.0" layoutY="107.0" prefHeight="17.0" prefWidth="248.0" />
+      <Label fx:id="today" layoutX="290.0" layoutY="99.0" prefHeight="17.0" prefWidth="274.0" />
+      <Label layoutX="18.0" layoutY="392.0" text="TEMPERATURA" />
+      <Label fx:id="temp1" layoutX="113.0" layoutY="392.0" />
+      <Label fx:id="temp1" layoutX="137.0" layoutY="392.0" prefHeight="17.0" prefWidth="239.0" text="Label" />
+      <Label layoutX="18.0" layoutY="419.0" text="CIŚNIENIE" />
+      <Label fx:id="pres1" layoutX="137.0" layoutY="419.0" prefHeight="17.0" prefWidth="239.0" text="Label" />
+   </children>
+</AnchorPane>
