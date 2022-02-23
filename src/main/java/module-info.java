@@ -1,7 +1,9 @@
 module org.example {
     requires javafx.controls;
     requires javafx.fxml;
-    requires org.json;
+    requires com.fasterxml.jackson.annotation;
+    requires com.fasterxml.jackson.databind;
+    requires com.fasterxml.jackson.core;
 
     opens pl.com.danielsokanski to javafx.fxml;
     exports pl.com.danielsokanski;
@@ -11,4 +13,8 @@ module org.example {
     opens pl.com.danielsokanski.view to javafx.fxml;
     opens pl.com.danielsokanski.model to javafx.fxml;
     exports pl.com.danielsokanski.model;
+    exports pl.com.danielsokanski.model.openweathermap.common;
+    exports pl.com.danielsokanski.model.openweathermap.direct;
+    exports pl.com.danielsokanski.model.openweathermap.forecast;
+    exports pl.com.danielsokanski.model.openweathermap.weather;
 }
