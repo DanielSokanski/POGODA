@@ -44,7 +44,7 @@ public class WeatherData {
 
     private void gatherWeather() {
         try {
-            String currentWeatherJson = jsonFromWeb(String.format("http://api.openweathermap.org/data/2.5/forecast?lat=%s&lon=%s&appid=%s&lang=pl&units=metric", city, API_KEY));
+            String currentWeatherJson = jsonFromWeb(String.format("http://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s&lang=pl&units=metric", city, API_KEY));
             CurrentWeather currentWeather = mapper.readValue(currentWeatherJson, CurrentWeather.class);
             this.currentWeather = currentWeather;
         } catch (JsonProcessingException e) {
