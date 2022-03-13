@@ -17,4 +17,5 @@ module org.example {
     exports pl.com.danielsokanski.model.openweathermap.direct;
     exports pl.com.danielsokanski.model.openweathermap.forecast;
     exports pl.com.danielsokanski.model.openweathermap.weather;
+    exports pl.com.danielsokanski.model.openweathermap.daily;
 }

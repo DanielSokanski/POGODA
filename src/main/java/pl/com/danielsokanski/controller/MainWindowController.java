@@ -1,36 +1,45 @@
 package pl.com.danielsokanski.controller;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import pl.com.danielsokanski.model.ForecastTableItem;
 import pl.com.danielsokanski.model.WeatherData;
-import pl.com.danielsokanski.model.openweathermap.forecast.Forecast;
-import pl.com.danielsokanski.model.openweathermap.forecast.ListItem;
+import pl.com.danielsokanski.model.openweathermap.common.OneCallData;
+import pl.com.danielsokanski.model.openweathermap.daily.OneCall;
+import pl.com.danielsokanski.model.openweathermap.daily.Weather;
 import pl.com.danielsokanski.model.openweathermap.weather.CurrentWeather;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.time.DayOfWeek;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 
 public class MainWindowController implements Initializable {
     String current_city;
     String searched_city;
 
-    @FXML
-    private Label today;
 
     @FXML
     private TextField myCity;
@@ -69,19 +78,26 @@ public class MainWindowController implements Initializable {
     private Label newCityWind;
 
     @FXML
-    private Label tomorrow;
+    private ScrollPane myCityScrollPane;
 
     @FXML
-    private Label temp1;
+    private HBox myCityHbox;
 
     @FXML
-    private Label pres1;
+    private ScrollPane newCityScrollPane;
 
     @FXML
-    private TableView<ForecastTableItem> myCityForecastTable;
+    private HBox newCityHbox;
 
     @FXML
-    private TableView<ForecastTableItem> newCityForecastTable;
+    private ImageView myCityIcon;
+
+    @FXML
+    private ImageView newCityIcon;
+
+    @FXML
+    private AnchorPane mainPane;
+
 
     @FXML
     void searchMyCity() {
@@ -124,76 +140,132 @@ public class MainWindowController implements Initializable {
         myCityPressure.setText("");
         myCityHumidity.setText("");
         myCityWind.setText("");
-        today.setText("");
         newCity.setText("");
         newCityTemp.setText("");
         newCityPressure.setText("");
         newCityHumidity.setText("");
         newCityWind.setText("");
-        today.setText("");
-        initTable(myCityForecastTable);
-        initTable(newCityForecastTable);
+
     }
 
-    private void fillMyWeatherData(WeatherData weatherData) {
+    private void fillMyWeatherData(WeatherData weatherData) throws FileNotFoundException, URISyntaxException {
         weatherData.loadData();
-        Forecast forecast = weatherData.getForecast();
+        OneCall oneCall = weatherData.getOneCall();
         CurrentWeather currentWeather = weatherData.getCurrentWeather();
         myCity.setText(currentWeather.getName().toUpperCase());
         myCityTemp.setText(currentWeather.getMain().getTemp().toString() + "°C");
         myCityPressure.setText(currentWeather.getMain().getPressure() + " hPa");
         myCityHumidity.setText(currentWeather.getMain().getHumidity() + "%");
         myCityWind.setText(currentWeather.getWind().getSpeed() + " m/s");
+
+
+
+  //      URL url1 = getClass().getResource(String.format("/img/%s@2x.png", currentWeather.getWeather().get(Integer.parseInt("icon"))));
+   //     File file1 = Paths.get(url1.toURI()).toFile();
+   //     MyCityIcon = new Image(new FileInputStream(file1));
+
         DayOfWeek day = Instant.ofEpochSecond(currentWeather.getDt()).atZone(ZoneId.systemDefault()).getDayOfWeek();
-        today.setText(day.getDisplayName(TextStyle.FULL, Locale.forLanguageTag("pl-PL")).toUpperCase());
-        ObservableList<ForecastTableItem> data = FXCollections.observableArrayList();
-        forecast.getList().forEach((item) -> {
-            data.add(new ForecastTableItem(item.getDtTxt(), item.getMain().getTemp(), item.getMain().getPressure(), item.getMain().getHumidity(), item.getWind().getSpeed()));
+        myCityHbox = new HBox();
+        myCityHbox.setSpacing(10);
+        myCityHbox.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+        List<OneCallData> oneCallData = oneCall.getDaily().stream()
+                .map((daily) -> {
+                    Label temp = new Label(String.format("Temp: %s", daily.getTemp().getDay()));
+                    Label windSpeed = new Label(String.format("Wiatr: %s m/s", daily.getWindSpeed()));
+                    Image image = null;
+                    try {
+                        URL url = getClass().getResource(String.format("/img/%s@2x.png", daily.getWeather().get(0).getIcon()));
+                        File file = Paths.get(url.toURI()).toFile();
+                        image = new Image(new FileInputStream(file));
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    return new OneCallData(temp, windSpeed, image);
+                }).collect(Collectors.toList());
+
+        oneCallData.forEach(element -> {
+            VBox vBox = new VBox();
+            ImageView imageView = new ImageView(element.getImage());
+            imageView.setScaleX(0.5);
+            imageView.setScaleY(0.5);
+
+            vBox.setSpacing(2);
+            vBox.getChildren().add(imageView);
+            vBox.getChildren().add(element.getTemp());
+            vBox.getChildren().add(element.getWindSpeed());
+
+            vBox.setAlignment(Pos.CENTER);
+            myCityHbox.getChildren().add(vBox);
+
         });
-        this.myCityForecastTable.setItems(data);
+
+        myCityScrollPane.setContent(myCityHbox);
+        myCityScrollPane.setFitToHeight(true);
     }
 
-    private void initTable(TableView tableView) {
-        TableColumn<ForecastTableItem, String> dateColumn = new TableColumn<>("Data");
-        dateColumn.setCellValueFactory(new PropertyValueFactory<ForecastTableItem, String>("date"));
-        TableColumn<ForecastTableItem, String> tempColumn = new TableColumn<>("Temperatura");
-        tempColumn.setCellValueFactory(new PropertyValueFactory<ForecastTableItem, String>("temp"));
-        TableColumn<ForecastTableItem, String> pressureColumn = new TableColumn<>("Ciśnienie");
-        pressureColumn.setCellValueFactory(new PropertyValueFactory<ForecastTableItem, String>("pressure"));
-        TableColumn<ForecastTableItem, String> humidityColumn = new TableColumn<>("Wilgotność");
-        humidityColumn.setCellValueFactory(new PropertyValueFactory<ForecastTableItem, String>("humidity"));
-        TableColumn<ForecastTableItem, String> windSpeedColumn = new TableColumn<>("Prędkość wiatru");
-        windSpeedColumn.setCellValueFactory(new PropertyValueFactory<ForecastTableItem, String>("windSpeed"));
 
-        dateColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.3));
-        tempColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
-        pressureColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.15));
-        humidityColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.18));
-        windSpeedColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.22));
-
-        tableView.getColumns().add(dateColumn);
-        tableView.getColumns().add(tempColumn);
-        tableView.getColumns().add(pressureColumn);
-        tableView.getColumns().add(humidityColumn);
-        tableView.getColumns().add(windSpeedColumn);
-    }
-
-    private void fillNewWeatherData(WeatherData weatherData) {
+    private void fillNewWeatherData(WeatherData weatherData) throws FileNotFoundException, URISyntaxException {
         weatherData.loadData();
-        Forecast forecast = weatherData.getForecast();
+        OneCall oneCall = weatherData.getOneCall();
         CurrentWeather currentWeather = weatherData.getCurrentWeather();
         newCity.setText(currentWeather.getName().toUpperCase());
         newCityTemp.setText(currentWeather.getMain().getTemp().toString() + "°C");
         newCityPressure.setText(currentWeather.getMain().getPressure() + " hPa");
         newCityHumidity.setText(currentWeather.getMain().getHumidity() + "%");
         newCityWind.setText(currentWeather.getWind().getSpeed() + " m/s");
+ //       Image image2 = null;
+ //       try {
+ //           URL url1 = getClass().getResource(String.format("/img/%s@2x.png", currentWeather.getWeather().get(0).getIcon()));
+ //           File file = Paths.get(url1.toURI()).toFile();
+ //           image2 = new Image(new FileInputStream(file));
+ //       } catch (URISyntaxException e) {
+ //           e.printStackTrace();
+ //       } catch (FileNotFoundException e) {
+ //           e.printStackTrace();
+ //       }
+//
+ //       newCityIcon.setImage(image2);
         DayOfWeek day = Instant.ofEpochSecond(currentWeather.getDt()).atZone(ZoneId.systemDefault()).getDayOfWeek();
-        today.setText(day.getDisplayName(TextStyle.FULL, Locale.forLanguageTag("pl-PL")).toUpperCase());
-        ObservableList<ForecastTableItem> data = FXCollections.observableArrayList();
-        forecast.getList().forEach((item) -> {
-            data.add(new ForecastTableItem(item.getDtTxt(), item.getMain().getTemp(), item.getMain().getPressure(), item.getMain().getHumidity(), item.getWind().getSpeed()));
+        newCityHbox = new HBox();
+        newCityHbox.setSpacing(10);
+        newCityHbox.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+        List<OneCallData> oneCallData = oneCall.getDaily().stream()
+                .map((daily) -> {
+                    Label temp = new Label(String.format("Temp: %s", daily.getTemp().getDay()));
+                    Label windSpeed = new Label(String.format("Wiatr: %s m/s", daily.getWindSpeed()));
+                    Image image = null;
+                    try {
+                        URL url = getClass().getResource(String.format("/img/%s@2x.png", daily.getWeather().get(0).getIcon()));
+                        File file = Paths.get(url.toURI()).toFile();
+                        image = new Image(new FileInputStream(file));
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    return new OneCallData(temp, windSpeed, image);
+                }).collect(Collectors.toList());
+
+        oneCallData.forEach(element -> {
+            VBox vBox = new VBox();
+            ImageView imageView = new ImageView(element.getImage());
+            imageView.setScaleX(0.5);
+            imageView.setScaleY(0.5);
+
+            vBox.setSpacing(2);
+            vBox.getChildren().add(imageView);
+            vBox.getChildren().add(element.getTemp());
+            vBox.getChildren().add(element.getWindSpeed());
+
+            vBox.setAlignment(Pos.CENTER);
+            newCityHbox.getChildren().add(vBox);
+
         });
-        this.newCityForecastTable.setItems(data);
+
+        newCityScrollPane.setContent(newCityHbox);
+        newCityScrollPane.setFitToHeight(true);
     }
 
     private void clearLabels() {
