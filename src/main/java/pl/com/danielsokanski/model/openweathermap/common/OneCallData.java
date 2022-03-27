@@ -8,14 +8,17 @@ import java.util.List;
 public class OneCallData {
     private Label temp;
     private Label windSpeed;
-
+    private Label dt;
     private Image image;
 
 
-    public OneCallData(Label temp, Label windSpeed, Image image) {
+
+
+    public OneCallData(Label dt, Label temp, Label windSpeed, Image image) {
         this.temp = temp;
         this.windSpeed = windSpeed;
         this.image = image;
+        this.dt = dt;
     }
 
 
@@ -41,5 +44,12 @@ public class OneCallData {
 
     public void setImage(Image image) {
         this.image = image;
+    }
+    public Label getDt() {
+        return dt;
+    }
+
+    public void setDt(Label dt) {
+        this.dt = dt;
     }
 }

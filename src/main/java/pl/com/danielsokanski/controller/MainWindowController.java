@@ -5,7 +5,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -13,25 +12,26 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import pl.com.danielsokanski.model.ForecastTableItem;
 import pl.com.danielsokanski.model.WeatherData;
 import pl.com.danielsokanski.model.openweathermap.common.OneCallData;
 import pl.com.danielsokanski.model.openweathermap.daily.OneCall;
-import pl.com.danielsokanski.model.openweathermap.daily.Weather;
+
 import pl.com.danielsokanski.model.openweathermap.weather.CurrentWeather;
+
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.time.format.TextStyle;
+import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -40,6 +40,8 @@ public class MainWindowController implements Initializable {
     String current_city;
     String searched_city;
 
+    @FXML
+    private AnchorPane mainPane;
 
     @FXML
     private TextField myCity;
@@ -96,7 +98,11 @@ public class MainWindowController implements Initializable {
     private ImageView newCityIcon;
 
     @FXML
-    private AnchorPane mainPane;
+    private Label Date;
+
+    @FXML
+    private Label Date1;
+
 
 
     @FXML
@@ -135,6 +141,7 @@ public class MainWindowController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
         myCity.setText("");
         myCityTemp.setText("");
         myCityPressure.setText("");
@@ -152,55 +159,60 @@ public class MainWindowController implements Initializable {
         weatherData.loadData();
         OneCall oneCall = weatherData.getOneCall();
         CurrentWeather currentWeather = weatherData.getCurrentWeather();
-        myCity.setText(currentWeather.getName().toUpperCase());
+        myCity.setText("");
+        myCityName.setText(currentWeather.getName().toUpperCase());
+        long today = currentWeather.getDt();
+        Date todaysdate = new Date(today*1000L);
+        SimpleDateFormat sdfToday = new SimpleDateFormat("yyyy-MM-dd");
+        String today_date = sdfToday.format(todaysdate);
+        Date.setText(today_date);
         myCityTemp.setText(currentWeather.getMain().getTemp().toString() + "°C");
         myCityPressure.setText(currentWeather.getMain().getPressure() + " hPa");
         myCityHumidity.setText(currentWeather.getMain().getHumidity() + "%");
         myCityWind.setText(currentWeather.getWind().getSpeed() + " m/s");
-
-
-
-  //      URL url1 = getClass().getResource(String.format("/img/%s@2x.png", currentWeather.getWeather().get(Integer.parseInt("icon"))));
-   //     File file1 = Paths.get(url1.toURI()).toFile();
-   //     MyCityIcon = new Image(new FileInputStream(file1));
-
-        DayOfWeek day = Instant.ofEpochSecond(currentWeather.getDt()).atZone(ZoneId.systemDefault()).getDayOfWeek();
+        //DayOfWeek day = Instant.ofEpochSecond(currentWeather.getDt()).atZone(ZoneId.systemDefault()).getDayOfWeek();
         myCityHbox = new HBox();
         myCityHbox.setSpacing(10);
         myCityHbox.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
-        List<OneCallData> oneCallData = oneCall.getDaily().stream()
+
+        List<OneCallData> oneCallData = oneCall.getDaily().stream().filter(weather -> weather.getDt() != today).limit(4)
                 .map((daily) -> {
-                    Label temp = new Label(String.format("Temp: %s", daily.getTemp().getDay()));
+                    long unixSecond = daily.getDt();
+                    Date date = new Date(unixSecond*1000L);
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    String formattedDate = sdf.format(date);
+                    Label date1 = new Label(String.format("%s", formattedDate));
+                    Label temp = new Label(String.format("Temp: %s °C", daily.getTemp().getDay()));
                     Label windSpeed = new Label(String.format("Wiatr: %s m/s", daily.getWindSpeed()));
                     Image image = null;
                     try {
-                        URL url = getClass().getResource(String.format("/img/%s@2x.png", daily.getWeather().get(0).getIcon()));
+                        URL url = getClass().getResource(String.format("/img/%s@2x.png",daily.getWeather().get(0).getIcon()));
                         File file = Paths.get(url.toURI()).toFile();
                         image = new Image(new FileInputStream(file));
+                        myCityIcon.setImage(image);
+                        myCityIcon.setScaleX(2);
+                        myCityIcon.setScaleY(2);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
-                    return new OneCallData(temp, windSpeed, image);
-                }).collect(Collectors.toList());
-
+                    return new OneCallData(date1, temp, windSpeed, image);
+                })
+                .collect(Collectors.toList());
         oneCallData.forEach(element -> {
             VBox vBox = new VBox();
             ImageView imageView = new ImageView(element.getImage());
-            imageView.setScaleX(0.5);
-            imageView.setScaleY(0.5);
-
+            imageView.setScaleX(1);
+            imageView.setScaleY(1);
             vBox.setSpacing(2);
             vBox.getChildren().add(imageView);
+            vBox.getChildren().add(element.getDt());
             vBox.getChildren().add(element.getTemp());
             vBox.getChildren().add(element.getWindSpeed());
-
             vBox.setAlignment(Pos.CENTER);
             myCityHbox.getChildren().add(vBox);
-
         });
-
         myCityScrollPane.setContent(myCityHbox);
         myCityScrollPane.setFitToHeight(true);
     }
@@ -210,29 +222,28 @@ public class MainWindowController implements Initializable {
         weatherData.loadData();
         OneCall oneCall = weatherData.getOneCall();
         CurrentWeather currentWeather = weatherData.getCurrentWeather();
-        newCity.setText(currentWeather.getName().toUpperCase());
+        newCity.setText("");
+        searchedCityName.setText(currentWeather.getName().toUpperCase());
+        long today = currentWeather.getDt();
+        Date todaysdate = new java.util.Date(today*1000L);
+        SimpleDateFormat sdfToday = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        String today_date = sdfToday.format(todaysdate);
+        Date1.setText(today_date);
         newCityTemp.setText(currentWeather.getMain().getTemp().toString() + "°C");
         newCityPressure.setText(currentWeather.getMain().getPressure() + " hPa");
         newCityHumidity.setText(currentWeather.getMain().getHumidity() + "%");
         newCityWind.setText(currentWeather.getWind().getSpeed() + " m/s");
- //       Image image2 = null;
- //       try {
- //           URL url1 = getClass().getResource(String.format("/img/%s@2x.png", currentWeather.getWeather().get(0).getIcon()));
- //           File file = Paths.get(url1.toURI()).toFile();
- //           image2 = new Image(new FileInputStream(file));
- //       } catch (URISyntaxException e) {
- //           e.printStackTrace();
- //       } catch (FileNotFoundException e) {
- //           e.printStackTrace();
- //       }
-//
- //       newCityIcon.setImage(image2);
         DayOfWeek day = Instant.ofEpochSecond(currentWeather.getDt()).atZone(ZoneId.systemDefault()).getDayOfWeek();
         newCityHbox = new HBox();
         newCityHbox.setSpacing(10);
         newCityHbox.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
-        List<OneCallData> oneCallData = oneCall.getDaily().stream()
+        List<OneCallData> oneCallData = oneCall.getDaily().stream().filter(weather -> weather.getDt() != today).limit(4)
                 .map((daily) -> {
+                    long unixSecond = daily.getDt();
+                    Date date = new java.util.Date(unixSecond*1000L);
+                    SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+                    String formattedDate = sdf.format(date);
+                    Label date1 = new Label(String.format("%s", formattedDate));
                     Label temp = new Label(String.format("Temp: %s", daily.getTemp().getDay()));
                     Label windSpeed = new Label(String.format("Wiatr: %s m/s", daily.getWindSpeed()));
                     Image image = null;
@@ -240,30 +251,30 @@ public class MainWindowController implements Initializable {
                         URL url = getClass().getResource(String.format("/img/%s@2x.png", daily.getWeather().get(0).getIcon()));
                         File file = Paths.get(url.toURI()).toFile();
                         image = new Image(new FileInputStream(file));
+                        newCityIcon.setImage(image);
+                        newCityIcon.setScaleX(2);
+                        newCityIcon.setScaleY(2);
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
-                    return new OneCallData(temp, windSpeed, image);
+                    return new OneCallData(date1, temp, windSpeed, image);
                 }).collect(Collectors.toList());
 
         oneCallData.forEach(element -> {
             VBox vBox = new VBox();
             ImageView imageView = new ImageView(element.getImage());
-            imageView.setScaleX(0.5);
-            imageView.setScaleY(0.5);
-
+            imageView.setScaleX(1);
+            imageView.setScaleY(1);
             vBox.setSpacing(2);
             vBox.getChildren().add(imageView);
+            vBox.getChildren().add(element.getDt());
             vBox.getChildren().add(element.getTemp());
             vBox.getChildren().add(element.getWindSpeed());
-
             vBox.setAlignment(Pos.CENTER);
             newCityHbox.getChildren().add(vBox);
-
         });
-
         newCityScrollPane.setContent(newCityHbox);
         newCityScrollPane.setFitToHeight(true);
     }

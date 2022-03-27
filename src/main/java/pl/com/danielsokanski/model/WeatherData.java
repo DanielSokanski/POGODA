@@ -53,7 +53,7 @@ public class WeatherData {
 
     private void gatherOneCall(Double lat, Double lon){
         try {
-            String oneCallJson = jsonFromWeb(String.format("https://api.openweathermap.org/data/2.5/onecall?lat=%s&lon=%s&exclude=current,minutely,hourly,alerts&appid=%s&lang=pl&units=metric", lat, lon, API_KEY));
+            String oneCallJson = jsonFromWeb(String.format("https://api.openweathermap.org/data/2.5/onecall?lat=%s&lon=%s&exclude=current,minutely,hourly,alerts&appid=%s&lang=pl&units=metric&cnt=3", lat, lon, API_KEY));
             OneCall oneCall = mapper.readValue(oneCallJson, OneCall.class);
             this.oneCall = oneCall;
         } catch (JsonProcessingException e) {

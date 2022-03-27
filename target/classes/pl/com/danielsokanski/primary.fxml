@@ -4,69 +4,110 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="mainPane" prefHeight="649.0" prefWidth="982.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.com.danielsokanski.controller.MainWindowController">
+<AnchorPane fx:id="mainPane" prefHeight="616.0" prefWidth="984.0" style="-fx-background-color: #F8F8FF;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.com.danielsokanski.controller.MainWindowController">
     <children>
 
-        <Label layoutX="31.0" layoutY="32.0" text="Twoje miasto" />
-        <Label layoutX="523.0" layoutY="32.0" text="Szukaj miasta" />
-        <TextField fx:id="myCity" layoutX="109.0" layoutY="28.0" prefHeight="25.0" prefWidth="183.0" promptText="Wpisz nazwę twojego miasta" AnchorPane.bottomAnchor="541.0" AnchorPane.leftAnchor="109.0" AnchorPane.rightAnchor="525.0" AnchorPane.topAnchor="28.0" />
-        <TextField fx:id="newCity" layoutX="610.0" layoutY="28.0" prefHeight="25.0" prefWidth="341.0" promptText="Nazwa szukanego miasta" AnchorPane.bottomAnchor="541.0" AnchorPane.leftAnchor="610.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="28.0" />
-        <Button layoutX="409.0" layoutY="28.0" mnemonicParsing="false" onAction="#searchMyCity" text="Szukaj" textAlignment="CENTER" />
+        <Label layoutX="21.0" layoutY="32.0" text="Twoje miasto">
+         <font>
+            <Font name="Cambria" size="14.0" />
+         </font></Label>
+        <Label layoutX="518.0" layoutY="32.0" text="Szukaj miasta" textFill="#0d0d0d">
+         <font>
+            <Font name="Cambria" size="14.0" />
+         </font></Label>
+        <TextField fx:id="myCity" layoutX="109.0" layoutY="28.0" prefHeight="74.0" prefWidth="292.0" promptText="Wpisz nazwę twojego miasta" AnchorPane.bottomAnchor="547.0" AnchorPane.leftAnchor="109.0" AnchorPane.rightAnchor="581.0" AnchorPane.topAnchor="28.0">
+         <font>
+            <Font name="Cambria" size="12.0" />
+         </font></TextField>
+        <TextField fx:id="newCity" layoutX="610.0" layoutY="28.0" prefHeight="74.0" prefWidth="274.0" promptText="Nazwa szukanego miasta" AnchorPane.bottomAnchor="547.0" AnchorPane.leftAnchor="610.0" AnchorPane.rightAnchor="98.0" AnchorPane.topAnchor="28.0" />
+        <Button layoutX="416.0" layoutY="28.0" mnemonicParsing="false" onAction="#searchMyCity" text="Szukaj" textAlignment="CENTER" />
         <Button layoutX="901.0" layoutY="28.0" mnemonicParsing="false" onAction="#searchNewCity" text="Szukaj" textAlignment="CENTER" />
-        <Label fx:id="myCityName" layoutX="116.0" layoutY="91.0" prefHeight="17.0" prefWidth="274.0" />
-        <Label fx:id="searchedCityName" layoutX="609.0" layoutY="91.0" prefHeight="17.0" prefWidth="274.0" />
-        <Label layoutX="450.0" layoutY="286.0" text="NASTĘPNE DNI" textFill="#030303">
+        <Label fx:id="myCityName" layoutX="151.0" layoutY="112.0" prefHeight="22.0" prefWidth="207.0" textAlignment="CENTER">
          <font>
-            <Font name="Cambria" size="12.0" />
+            <Font name="Cambria" size="18.0" />
          </font></Label>
-        <Label layoutX="110.0" layoutY="148.0" text="TEMPERATURA" textFill="#030303" />
-        <Label layoutX="110.0" layoutY="172.0" text="CIŚNIENIE" textFill="#030303" />
-        <Label layoutX="110.0" layoutY="197.0" text="WILGOTNOŚĆ" textFill="#030303" />
-        <Label layoutX="110.0" layoutY="222.0" text="PRĘDKOŚĆ WIATRU" textFill="#030303" />
-        <Label layoutX="588.0" layoutY="143.0" text="TEMPERATURA" textFill="#030303">
+        <Label fx:id="searchedCityName" layoutX="660.0" layoutY="110.0" prefHeight="27.0" prefWidth="172.0" textAlignment="CENTER">
          <font>
-            <Font name="Cambria" size="12.0" />
+            <Font size="18.0" />
          </font></Label>
-        <Label layoutX="588.0" layoutY="167.0" text="CIŚNIENIE" textFill="#030303">
+        <Label layoutX="208.0" layoutY="293.0" text="NASTĘPNE DNI">
          <font>
-            <Font name="Cambria" size="12.0" />
+            <Font name="Cambria" size="18.0" />
          </font></Label>
-        <Label layoutX="588.0" layoutY="192.0" text="WILGOTNOŚĆ" textFill="#030303">
+        <Label layoutX="70.0" layoutY="178.0" text="TEMPERATURA">
          <font>
-            <Font name="Cambria" size="12.0" />
+            <Font name="Cambria" size="14.0" />
          </font></Label>
-        <Label layoutX="588.0" layoutY="217.0" text="PRĘDKOŚĆ WIATRU" textFill="#030303">
+        <Label layoutX="70.0" layoutY="202.0" text="CIŚNIENIE">
          <font>
-            <Font name="Cambria" size="12.0" />
+            <Font name="Cambria" size="14.0" />
          </font></Label>
-        <Label fx:id="myCityTemp" layoutX="232.0" layoutY="148.0" prefHeight="17.0" prefWidth="106.0" text="Label" textFill="#030303" />
-        <Label fx:id="myCityPressure" layoutX="232.0" layoutY="172.0" prefHeight="17.0" prefWidth="106.0" text="Label" textFill="#030303" />
-        <Label fx:id="myCityHumidity" layoutX="232.0" layoutY="197.0" prefHeight="17.0" prefWidth="106.0" text="Label" textFill="#030303" />
-        <Label fx:id="myCityWind" layoutX="232.0" layoutY="222.0" prefHeight="17.0" prefWidth="106.0" text="Label" textFill="#030303" />
-        <Label fx:id="newCityTemp" layoutX="703.0" layoutY="143.0" prefHeight="17.0" prefWidth="121.0" text="Label" textFill="#030303">
+        <Label layoutX="70.0" layoutY="227.0" text="WILGOTNOŚĆ">
          <font>
-            <Font name="Cambria" size="12.0" />
+            <Font name="Cambria" size="14.0" />
          </font></Label>
-        <Label fx:id="newCityPressure" layoutX="703.0" layoutY="167.0" prefHeight="17.0" prefWidth="121.0" text="Label" textFill="#030303">
+        <Label layoutX="70.0" layoutY="252.0" text="PRĘDKOŚĆ WIATRU">
          <font>
-            <Font name="Cambria" size="12.0" />
+            <Font name="Cambria" size="14.0" />
          </font></Label>
-        <Label fx:id="newCityHumidity" layoutX="703.0" layoutY="192.0" prefHeight="17.0" prefWidth="121.0" text="Label" textFill="#030303">
+        <Label layoutX="547.0" layoutY="173.0" text="TEMPERATURA">
          <font>
-            <Font name="Cambria" size="12.0" />
+            <Font name="Cambria" size="14.0" />
          </font></Label>
-        <Label fx:id="newCityWind" layoutX="703.0" layoutY="217.0" prefHeight="17.0" prefWidth="121.0" text="Label" textFill="#030303">
+        <Label layoutX="547.0" layoutY="197.0" text="CIŚNIENIE">
          <font>
-            <Font name="Cambria" size="12.0" />
+            <Font name="Cambria" size="14.0" />
+         </font></Label>
+        <Label layoutX="547.0" layoutY="222.0" text="WILGOTNOŚĆ">
+         <font>
+            <Font name="Cambria" size="14.0" />
+         </font></Label>
+        <Label layoutX="547.0" layoutY="247.0" text="PRĘDKOŚĆ WIATRU">
+         <font>
+            <Font name="Cambria" size="14.0" />
+         </font></Label>
+        <Label fx:id="myCityTemp" layoutX="232.0" layoutY="178.0" prefHeight="17.0" prefWidth="106.0" text="Label">
+         <font>
+            <Font name="Cambria" size="14.0" />
+         </font></Label>
+        <Label fx:id="myCityPressure" layoutX="232.0" layoutY="202.0" prefHeight="17.0" prefWidth="106.0" text="Label">
+         <font>
+            <Font name="Cambria" size="14.0" />
+         </font></Label>
+        <Label fx:id="myCityHumidity" layoutX="232.0" layoutY="227.0" prefHeight="17.0" prefWidth="106.0" text="Label">
+         <font>
+            <Font name="Cambria" size="14.0" />
+         </font></Label>
+        <Label fx:id="myCityWind" layoutX="232.0" layoutY="252.0" prefHeight="17.0" prefWidth="106.0" text="Label">
+         <font>
+            <Font name="Cambria" size="14.0" />
+         </font></Label>
+        <Label fx:id="newCityTemp" layoutX="718.0" layoutY="173.0" prefHeight="17.0" prefWidth="121.0" text="Label">
+         <font>
+            <Font name="Cambria" size="14.0" />
+         </font></Label>
+        <Label fx:id="newCityPressure" layoutX="718.0" layoutY="197.0" prefHeight="17.0" prefWidth="121.0" text="Label">
+         <font>
+            <Font name="Cambria" size="14.0" />
+         </font></Label>
+        <Label fx:id="newCityHumidity" layoutX="718.0" layoutY="222.0" prefHeight="17.0" prefWidth="121.0" text="Label">
+         <font>
+            <Font name="Cambria" size="14.0" />
+         </font></Label>
+        <Label fx:id="newCityWind" layoutX="718.0" layoutY="247.0" prefHeight="17.0" prefWidth="121.0" text="Label">
+         <font>
+            <Font name="Cambria" size="14.0" />
          </font></Label>
         <ScrollPane fx:id="myCityScrollPane" layoutX="31.0" layoutY="335.0" prefHeight="200.0" prefWidth="443.0">
             <content>
-                <HBox fx:id="myCityHbox" prefHeight="200.0" prefWidth="430.0">
+                <HBox fx:id="myCityHbox" prefHeight="200.0" prefWidth="430.0" style="-fx-background-color: #F8F8FF;">
                 </HBox>
             </content>
         </ScrollPane>
@@ -75,8 +116,29 @@
             <HBox fx:id="newCityHbox" prefHeight="200.0" prefWidth="430.0" />
          </content>
       </ScrollPane>
-      <ImageView fx:id="myCityIcon" fitHeight="58.0" fitWidth="76.0" layoutX="346.0" layoutY="143.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="newCityIcon" fitHeight="58.0" fitWidth="76.0" layoutX="870.0" layoutY="138.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="myCityIcon" fitHeight="58.0" fitWidth="76.0" layoutX="352.0" layoutY="190.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="newCityIcon" fitHeight="58.0" fitWidth="76.0" layoutX="863.0" layoutY="193.0" pickOnBounds="true" preserveRatio="true" />
+      <Label fx:id="Date" layoutX="207.0" layoutY="141.0" prefHeight="22.0" prefWidth="121.0" textAlignment="CENTER">
+         <font>
+            <Font name="Cambria" size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="Date1" layoutX="687.0" layoutY="142.0" prefHeight="22.0" prefWidth="121.0" textAlignment="CENTER">
+         <font>
+            <Font name="Cambria" size="18.0" />
+         </font>
+      </Label>
+      <Line endX="10.0" endY="621.0" layoutX="485.0" layoutY="28.0" startX="10.0" startY="-28.0" />
+      <Label layoutX="678.0" layoutY="293.0" text="NASTĘPNE DNI">
+         <font>
+            <Font name="Cambria" size="18.0" />
+         </font>
+      </Label>
+      <ImageView fx:id="background" blendMode="MULTIPLY" cache="true" cacheHint="QUALITY" disable="true" fitHeight="660.0" fitWidth="1000.0" layoutX="-6.0" layoutY="-6.0" mouseTransparent="true" opacity="0.57" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../img/Background.png" />
+         </image>
+      </ImageView>
 
 
     </children>
