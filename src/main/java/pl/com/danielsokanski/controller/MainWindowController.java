@@ -12,10 +12,11 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import pl.com.danielsokanski.model.WeatherData;
+import pl.com.danielsokanski.model.WeatherService;
 import pl.com.danielsokanski.model.openweathermap.common.OneCallData;
-import pl.com.danielsokanski.model.openweathermap.daily.OneCall;
-
+import pl.com.danielsokanski.model.openweathermap.daily.Daily;
+import pl.com.danielsokanski.model.openweathermap.daily.Forecast;
+import static pl.com.danielsokanski.Messages.BLAD;
 import pl.com.danielsokanski.model.openweathermap.weather.CurrentWeather;
 
 
@@ -24,12 +25,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
-import java.time.Instant;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -37,8 +34,6 @@ import java.util.stream.Collectors;
 
 
 public class MainWindowController implements Initializable {
-    String current_city;
-    String searched_city;
 
     @FXML
     private AnchorPane mainPane;
@@ -104,19 +99,16 @@ public class MainWindowController implements Initializable {
     private Label Date1;
 
 
-
     @FXML
     void searchMyCity() {
-        if (myCity.getText().equals("")) {
-            return;
-        } else {
+        if (!myCity.getText().equals("")) {
             try {
-                this.current_city = myCity.getText().trim();
+                String currentCity = myCity.getText().trim();
                 myCity.setText((myCity.getText().trim()).toUpperCase());
-                WeatherData weatherData = new WeatherData(current_city);
-                fillMyWeatherData(weatherData);
+                WeatherService weatherService = new WeatherService(currentCity);
+                fillMyWeatherData(weatherService);
             } catch (Exception e) {
-                myCity.setText("BLAD");
+                myCity.setText(BLAD);
                 clearLabels();
             }
         }
@@ -124,16 +116,14 @@ public class MainWindowController implements Initializable {
 
     @FXML
     void searchNewCity() {
-        if (newCity.getText().equals("")) {
-            return;
-        } else {
+        if (!newCity.getText().equals("")) {
             try {
-                this.searched_city = newCity.getText().trim();
+                String searchedCity = newCity.getText().trim();
                 newCity.setText((newCity.getText().trim()).toUpperCase());
-                WeatherData weatherData = new WeatherData(searched_city);
-                fillNewWeatherData(weatherData);
+                WeatherService weatherService = new WeatherService(searchedCity);
+                fillNewWeatherData(weatherService);
             } catch (Exception e) {
-                newCity.setText("BLAD");
+                newCity.setText(BLAD);
                 clearLabels();
             }
         }
@@ -141,62 +131,29 @@ public class MainWindowController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-        myCity.setText("");
-        myCityTemp.setText("");
-        myCityPressure.setText("");
-        myCityHumidity.setText("");
-        myCityWind.setText("");
-        newCity.setText("");
-        newCityTemp.setText("");
-        newCityPressure.setText("");
-        newCityHumidity.setText("");
-        newCityWind.setText("");
-
+        clearLabels();
     }
 
-    private void fillMyWeatherData(WeatherData weatherData) throws FileNotFoundException, URISyntaxException {
-        weatherData.loadData();
-        OneCall oneCall = weatherData.getOneCall();
-        CurrentWeather currentWeather = weatherData.getCurrentWeather();
-        myCity.setText("");
-        myCityName.setText(currentWeather.getName().toUpperCase());
-        long today = currentWeather.getDt();
-        Date todaysdate = new Date(today*1000L);
-        SimpleDateFormat sdfToday = new SimpleDateFormat("yyyy-MM-dd");
-        String today_date = sdfToday.format(todaysdate);
-        Date.setText(today_date);
-        myCityTemp.setText(currentWeather.getMain().getTemp().toString() + "°C");
-        myCityPressure.setText(currentWeather.getMain().getPressure() + " hPa");
-        myCityHumidity.setText(currentWeather.getMain().getHumidity() + "%");
-        myCityWind.setText(currentWeather.getWind().getSpeed() + " m/s");
-        //DayOfWeek day = Instant.ofEpochSecond(currentWeather.getDt()).atZone(ZoneId.systemDefault()).getDayOfWeek();
-        myCityHbox = new HBox();
-        myCityHbox.setSpacing(10);
-        myCityHbox.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
-
-        List<OneCallData> oneCallData = oneCall.getDaily().stream().filter(weather -> weather.getDt() != today).limit(4)
+    private void fillMyWeatherData(WeatherService weatherService){
+        weatherService.loadData();
+        Forecast forecast = weatherService.getOneCall();
+        CurrentWeather currentWeather = weatherService.getCurrentWeather();
+        setFields(currentWeather);
+        setHbox();
+        List<OneCallData> oneCallData = forecast.getDaily().stream().limit(4)
                 .map((daily) -> {
                     long unixSecond = daily.getDt();
-                    Date date = new Date(unixSecond*1000L);
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    String formattedDate = sdf.format(date);
+                    String formattedDate = setNextDates(unixSecond);
                     Label date1 = new Label(String.format("%s", formattedDate));
                     Label temp = new Label(String.format("Temp: %s °C", daily.getTemp().getDay()));
                     Label windSpeed = new Label(String.format("Wiatr: %s m/s", daily.getWindSpeed()));
                     Image image = null;
                     try {
-                        URL url = getClass().getResource(String.format("/img/%s@2x.png",daily.getWeather().get(0).getIcon()));
-                        File file = Paths.get(url.toURI()).toFile();
-                        image = new Image(new FileInputStream(file));
-                        myCityIcon.setImage(image);
-                        myCityIcon.setScaleX(2);
-                        myCityIcon.setScaleY(2);
-                    } catch (URISyntaxException e) {
-                        e.printStackTrace();
-                    } catch (FileNotFoundException e) {
+                        image = setImage(daily);
+                    } catch (URISyntaxException | FileNotFoundException e) {
                         e.printStackTrace();
                     }
+                    myCityIcon.setImage(image);
                     return new OneCallData(date1, temp, windSpeed, image);
                 })
                 .collect(Collectors.toList());
@@ -217,48 +174,71 @@ public class MainWindowController implements Initializable {
         myCityScrollPane.setFitToHeight(true);
     }
 
+    private Image setImage(Daily daily) throws URISyntaxException, FileNotFoundException {
+        Image image;
+        URL url = getClass().getResource(String.format("/img/%s@2x.png",daily.getWeather().get(0).getIcon()));
+        assert url != null;
+        File file = Paths.get(url.toURI()).toFile();
+        image = new Image(new FileInputStream(file));
+        return image;
+    }
 
-    private void fillNewWeatherData(WeatherData weatherData) throws FileNotFoundException, URISyntaxException {
-        weatherData.loadData();
-        OneCall oneCall = weatherData.getOneCall();
-        CurrentWeather currentWeather = weatherData.getCurrentWeather();
-        newCity.setText("");
-        searchedCityName.setText(currentWeather.getName().toUpperCase());
+    private String setNextDates(long unixSecond){
+        Date date = new Date(unixSecond*1000L);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(date);
+    }
+    private void setHbox() {
+            myCityHbox = new HBox();
+            myCityHbox.setSpacing(10);
+            myCityHbox.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+            newCityHbox = new HBox();
+            newCityHbox.setSpacing(10);
+            newCityHbox.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+    }
+
+    private void setFields(CurrentWeather currentWeather) {
+        myCity.setText("");
+        myCityName.setText(currentWeather.getName().toUpperCase());
+        myCityTemp.setText(currentWeather.getMain().getTemp().toString() + "°C");
+        myCityPressure.setText(currentWeather.getMain().getPressure() + " hPa");
+        myCityHumidity.setText(currentWeather.getMain().getHumidity() + "%");
+        myCityWind.setText(currentWeather.getWind().getSpeed() + " m/s");
+        setDate(currentWeather);
+    }
+
+    private void setDate(CurrentWeather currentWeather) {
         long today = currentWeather.getDt();
-        Date todaysdate = new java.util.Date(today*1000L);
-        SimpleDateFormat sdfToday = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        Date todaysdate = new Date(today*1000L);
+        SimpleDateFormat sdfToday = new SimpleDateFormat("yyyy-MM-dd");
         String today_date = sdfToday.format(todaysdate);
-        Date1.setText(today_date);
-        newCityTemp.setText(currentWeather.getMain().getTemp().toString() + "°C");
-        newCityPressure.setText(currentWeather.getMain().getPressure() + " hPa");
-        newCityHumidity.setText(currentWeather.getMain().getHumidity() + "%");
-        newCityWind.setText(currentWeather.getWind().getSpeed() + " m/s");
-        DayOfWeek day = Instant.ofEpochSecond(currentWeather.getDt()).atZone(ZoneId.systemDefault()).getDayOfWeek();
-        newCityHbox = new HBox();
-        newCityHbox.setSpacing(10);
-        newCityHbox.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
-        List<OneCallData> oneCallData = oneCall.getDaily().stream().filter(weather -> weather.getDt() != today).limit(4)
+        if(currentWeather.getName().equals(myCityName.getText())) {
+            Date1.setText(today_date);
+        } else {
+            Date.setText(today_date);
+        }
+    }
+
+    private void fillNewWeatherData(WeatherService weatherService) {
+        weatherService.loadData();
+        Forecast forecast = weatherService.getOneCall();
+        CurrentWeather currentWeather = weatherService.getCurrentWeather();
+        setNewFields(currentWeather);
+        setHbox();
+        List<OneCallData> oneCallData = forecast.getDaily().stream().limit(4)
                 .map((daily) -> {
                     long unixSecond = daily.getDt();
-                    Date date = new java.util.Date(unixSecond*1000L);
-                    SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
-                    String formattedDate = sdf.format(date);
+                    String formattedDate = setNextDates(unixSecond);
                     Label date1 = new Label(String.format("%s", formattedDate));
                     Label temp = new Label(String.format("Temp: %s", daily.getTemp().getDay()));
                     Label windSpeed = new Label(String.format("Wiatr: %s m/s", daily.getWindSpeed()));
                     Image image = null;
                     try {
-                        URL url = getClass().getResource(String.format("/img/%s@2x.png", daily.getWeather().get(0).getIcon()));
-                        File file = Paths.get(url.toURI()).toFile();
-                        image = new Image(new FileInputStream(file));
-                        newCityIcon.setImage(image);
-                        newCityIcon.setScaleX(2);
-                        newCityIcon.setScaleY(2);
-                    } catch (URISyntaxException e) {
-                        e.printStackTrace();
-                    } catch (FileNotFoundException e) {
+                        image = setImage(daily);
+                    } catch (URISyntaxException | FileNotFoundException e) {
                         e.printStackTrace();
                     }
+                    newCityIcon.setImage(image);
                     return new OneCallData(date1, temp, windSpeed, image);
                 }).collect(Collectors.toList());
 
@@ -277,6 +257,16 @@ public class MainWindowController implements Initializable {
         });
         newCityScrollPane.setContent(newCityHbox);
         newCityScrollPane.setFitToHeight(true);
+    }
+
+    private void setNewFields(CurrentWeather currentWeather) {
+        newCity.setText("");
+        searchedCityName.setText(currentWeather.getName().toUpperCase());
+        newCityTemp.setText(currentWeather.getMain().getTemp().toString() + "°C");
+        newCityPressure.setText(currentWeather.getMain().getPressure() + " hPa");
+        newCityHumidity.setText(currentWeather.getMain().getHumidity() + "%");
+        newCityWind.setText(currentWeather.getWind().getSpeed() + " m/s");
+        setDate(currentWeather);
     }
 
     private void clearLabels() {

@@ -9,8 +9,6 @@ module org.example {
     exports pl.com.danielsokanski;
     exports pl.com.danielsokanski.controller;
     opens pl.com.danielsokanski.controller to javafx.fxml;
-    exports pl.com.danielsokanski.view;
-    opens pl.com.danielsokanski.view to javafx.fxml;
     opens pl.com.danielsokanski.model to javafx.fxml;
     exports pl.com.danielsokanski.model;
     exports pl.com.danielsokanski.model.openweathermap.common;

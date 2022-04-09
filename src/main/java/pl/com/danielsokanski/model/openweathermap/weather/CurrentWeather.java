@@ -26,10 +26,6 @@ import java.util.Map;
 })
 public class CurrentWeather {
 
-    @JsonProperty("coord")
-    private Coord coord;
-    @JsonProperty("weather")
-    private List<Weather> weather = null;
     @JsonProperty("base")
     private String base;
     @JsonProperty("main")
@@ -38,12 +34,10 @@ public class CurrentWeather {
     private Integer visibility;
     @JsonProperty("wind")
     private Wind wind;
-    @JsonProperty("clouds")
-    private Clouds clouds;
+
     @JsonProperty("dt")
     private Long dt;
-    @JsonProperty("sys")
-    private Sys sys;
+
     @JsonProperty("timezone")
     private Integer timezone;
     @JsonProperty("id")
@@ -55,25 +49,7 @@ public class CurrentWeather {
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("coord")
-    public Coord getCoord() {
-        return coord;
-    }
 
-    @JsonProperty("coord")
-    public void setCoord(Coord coord) {
-        this.coord = coord;
-    }
-
-    @JsonProperty("weather")
-    public List<Weather> getWeather() {
-        return weather;
-    }
-
-    @JsonProperty("weather")
-    public void setWeather(List<Weather> weather) {
-        this.weather = weather;
-    }
 
     @JsonProperty("base")
     public String getBase() {
@@ -115,15 +91,6 @@ public class CurrentWeather {
         this.wind = wind;
     }
 
-    @JsonProperty("clouds")
-    public Clouds getClouds() {
-        return clouds;
-    }
-
-    @JsonProperty("clouds")
-    public void setClouds(Clouds clouds) {
-        this.clouds = clouds;
-    }
 
     @JsonProperty("dt")
     public Long getDt() {
@@ -133,16 +100,6 @@ public class CurrentWeather {
     @JsonProperty("dt")
     public void setDt(Long dt) {
         this.dt = dt;
-    }
-
-    @JsonProperty("sys")
-    public Sys getSys() {
-        return sys;
-    }
-
-    @JsonProperty("sys")
-    public void setSys(Sys sys) {
-        this.sys = sys;
     }
 
     @JsonProperty("timezone")

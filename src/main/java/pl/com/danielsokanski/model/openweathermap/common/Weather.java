@@ -8,10 +8,10 @@ import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "id",
-    "main",
-    "description",
-    "icon"
+        "id",
+        "main",
+        "description",
+        "icon"
 })
 public class Weather {
 

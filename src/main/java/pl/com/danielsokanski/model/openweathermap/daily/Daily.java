@@ -45,8 +45,7 @@ public class Daily {
     private Double moonPhase;
     @JsonProperty("temp")
     private Temp temp;
-    @JsonProperty("feels_like")
-    private FeelsLike feelsLike;
+
     @JsonProperty("pressure")
     private Integer pressure;
     @JsonProperty("humidity")
@@ -142,15 +141,6 @@ public class Daily {
         this.temp = temp;
     }
 
-    @JsonProperty("feels_like")
-    public FeelsLike getFeelsLike() {
-        return feelsLike;
-    }
-
-    @JsonProperty("feels_like")
-    public void setFeelsLike(FeelsLike feelsLike) {
-        this.feelsLike = feelsLike;
-    }
 
     @JsonProperty("pressure")
     public Integer getPressure() {

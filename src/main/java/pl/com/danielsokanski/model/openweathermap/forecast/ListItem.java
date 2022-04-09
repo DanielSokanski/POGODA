@@ -2,7 +2,7 @@
 package pl.com.danielsokanski.model.openweathermap.forecast;
 
 import com.fasterxml.jackson.annotation.*;
-import pl.com.danielsokanski.model.openweathermap.common.Clouds;
+
 import pl.com.danielsokanski.model.openweathermap.common.Main;
 import pl.com.danielsokanski.model.openweathermap.common.Weather;
 import pl.com.danielsokanski.model.openweathermap.common.Wind;
@@ -32,8 +32,7 @@ public class ListItem {
     private Main main;
     @JsonProperty("weather")
     private java.util.List<Weather> weather = null;
-    @JsonProperty("clouds")
-    private Clouds clouds;
+
     @JsonProperty("wind")
     private Wind wind;
     @JsonProperty("visibility")
@@ -42,10 +41,7 @@ public class ListItem {
     private Double pop;
     @JsonProperty("dt_txt")
     private String dtTxt;
-    @JsonProperty("rain")
-    private Rain rain;
-    @JsonProperty("snow")
-    private Snow snow;
+
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -79,15 +75,7 @@ public class ListItem {
         this.weather = weather;
     }
 
-    @JsonProperty("clouds")
-    public Clouds getClouds() {
-        return clouds;
-    }
 
-    @JsonProperty("clouds")
-    public void setClouds(Clouds clouds) {
-        this.clouds = clouds;
-    }
 
     @JsonProperty("wind")
     public Wind getWind() {
@@ -129,25 +117,7 @@ public class ListItem {
         this.dtTxt = dtTxt;
     }
 
-    @JsonProperty("rain")
-    public Rain getRain() {
-        return rain;
-    }
 
-    @JsonProperty("rain")
-    public void setRain(Rain rain) {
-        this.rain = rain;
-    }
-
-    @JsonProperty("snow")
-    public Snow getSnow() {
-        return snow;
-    }
-
-    @JsonProperty("snow")
-    public void setSnow(Snow snow) {
-        this.snow = snow;
-    }
 
     @JsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
