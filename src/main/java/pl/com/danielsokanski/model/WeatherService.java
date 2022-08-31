@@ -33,7 +33,6 @@ public class WeatherService {
         gatherForecast();
         gatherWeather();
     }
-
     private void gatherForecast() {
         try {
             String directJson = jsonFromWeb(String.format(OWM() + "/geo/1.0/direct?q=%s&limit=1&appid=%s", city, API_KEY));
@@ -44,7 +43,6 @@ public class WeatherService {
             System.out.println(PROBLEM_JSON);
         }
     }
-
     private void gatherWeather() {
         try {
             String currentWeatherJson = jsonFromWeb(String.format(OWM() + "/data/2.5/weather?q=%s&appid=%s&lang=pl&units=metric", city, API_KEY));
@@ -55,11 +53,9 @@ public class WeatherService {
 
         }
     }
-
     private String OWM() {
         return "https://api.openweathermap.org";
     }
-
     private void gatherOneCall(Double lat, Double lon){
         try {
             String oneCallJson = jsonFromWeb(String.format(OWM() + "/data/2.5/onecall?lat=%s&lon=%s&exclude=current,minutely,hourly,alerts&appid=%s&lang=pl&units=metric&cnt=3", lat, lon, API_KEY));
@@ -68,8 +64,6 @@ public class WeatherService {
             e.printStackTrace();
         }
     }
-
-
     private String jsonFromWeb(String url) {
         try (InputStream inputStream = new URL(url).openStream()) {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
@@ -79,7 +73,6 @@ public class WeatherService {
             return "";
         }
     }
-
     private String readAll(Reader reader) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         int no;
@@ -88,13 +81,9 @@ public class WeatherService {
         }
         return stringBuilder.toString();
     }
-
-
     public CurrentWeather getCurrentWeather() {
         return currentWeather;
     }
-
-
     public Forecast getOneCall() {
         return forecast;
     }

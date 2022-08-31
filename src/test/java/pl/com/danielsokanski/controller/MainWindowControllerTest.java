@@ -3,8 +3,6 @@ package pl.com.danielsokanski.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.net.URL;
-import java.util.ResourceBundle;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -19,21 +17,6 @@ class MainWindowControllerTest {
     @BeforeEach
     void setUp() {
         mainWindowControllerUnderTest = new MainWindowController();
-    }
-
-    @Test
-    void testSearchMyCity() {
-        mainWindowControllerUnderTest.searchMyCity();
-        assertThat(myCityName, equalTo("KRAKOW"));
-    }
-    @Test
-    void ifSearchMyCityIsNotEmpty() {
-        assertFalse(myCityName.isEmpty());
-    }
-    @Test
-    void testSearchNewCity() {
-        mainWindowControllerUnderTest.searchNewCity();
-        assertThat(newCityName, equalTo("WARSZAWA"));
     }
 
     @Test
