@@ -22,14 +22,10 @@ class MainWindowControllerTest {
     @Test
     void testInitialize() {
         //when
-        clearLabels();
+        mainWindowControllerUnderTest.clearLabels();
         // then
         assertTrue(myCityName.isEmpty());
         assertTrue(newCityName.isEmpty());
     }
 
-    private void clearLabels() {
-        myCityName = "";
-        newCityName = "";
-    }
 }

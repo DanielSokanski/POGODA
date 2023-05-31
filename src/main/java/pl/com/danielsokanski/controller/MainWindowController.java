@@ -269,7 +269,7 @@ public class MainWindowController implements Initializable {
         setDate(currentWeather);
     }
 
-    private void clearLabels() {
+    public void clearLabels() {
         myCityName.setText("");
         searchedCityName.setText("");
         myCityTemp.setText("");

@@ -1,0 +1,199 @@
+Index: src/main/java/module-info.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/module-info.java b/src/main/java/module-info.java
+--- a/src/main/java/module-info.java	(revision 15880329c38db57844acfed378c90a2c7c530361)
++++ b/src/main/java/module-info.java	(date 1662998122534)
+@@ -8,8 +8,8 @@
+     opens pl.com.danielsokanski to javafx.fxml;
+     exports pl.com.danielsokanski;
+     exports pl.com.danielsokanski.controller;
+-    opens pl.com.danielsokanski.controller to javafx.fxml;
+-    opens pl.com.danielsokanski.model to javafx.fxml;
++    opens pl.com.danielsokanski.controller;
++    opens pl.com.danielsokanski.model;
+     exports pl.com.danielsokanski.model;
+     exports pl.com.danielsokanski.model.openweathermap.common;
+     exports pl.com.danielsokanski.model.openweathermap.direct;
+Index: pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/pom.xml b/pom.xml
+--- a/pom.xml	(revision 15880329c38db57844acfed378c90a2c7c530361)
++++ b/pom.xml	(date 1662998080820)
+@@ -80,6 +80,14 @@
+                 </configuration>
+             </plugin>
+             <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-surefire-plugin</artifactId>
++                <version>3.0.0-M5</version>
++                <configuration>
++                    <useModulePath>true</useModulePath>
++                </configuration>
++            </plugin>
++            <plugin>
+                 <groupId>org.openjfx</groupId>
+                 <artifactId>javafx-maven-plugin</artifactId>
+                 <version>0.0.4</version>
+Index: src/main/java/pl/com/danielsokanski/model/WeatherData.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/pl/com/danielsokanski/model/WeatherData.java b/src/main/java/pl/com/danielsokanski/model/WeatherData.java
+--- a/src/main/java/pl/com/danielsokanski/model/WeatherData.java	(revision 15880329c38db57844acfed378c90a2c7c530361)
++++ b/src/main/java/pl/com/danielsokanski/model/WeatherData.java	(date 1663000411895)
+@@ -4,7 +4,6 @@
+ import com.fasterxml.jackson.databind.ObjectMapper;
+ import pl.com.danielsokanski.model.openweathermap.daily.OneCall;
+ import pl.com.danielsokanski.model.openweathermap.direct.Direct;
+-import pl.com.danielsokanski.model.openweathermap.forecast.Forecast;
+ import pl.com.danielsokanski.model.openweathermap.weather.CurrentWeather;
+ 
+ import java.io.*;
+@@ -12,7 +11,7 @@
+ import java.nio.charset.Charset;
+ 
+ 
+-public class WeatherData {
++public class WeatherData { //this class it's not used (or tested)
+ 
+     public static final String API_KEY = "9f50290acb8f2bf479a301a08f4d725b";
+     private static final ObjectMapper mapper = new ObjectMapper();
+Index: dependency-reduced-pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/dependency-reduced-pom.xml b/dependency-reduced-pom.xml
+--- a/dependency-reduced-pom.xml	(revision 15880329c38db57844acfed378c90a2c7c530361)
++++ b/dependency-reduced-pom.xml	(date 1662998129663)
+@@ -14,6 +14,13 @@
+         </configuration>
+       </plugin>
+       <plugin>
++        <artifactId>maven-surefire-plugin</artifactId>
++        <version>3.0.0-M5</version>
++        <configuration>
++          <useModulePath>true</useModulePath>
++        </configuration>
++      </plugin>
++      <plugin>
+         <groupId>org.openjfx</groupId>
+         <artifactId>javafx-maven-plugin</artifactId>
+         <version>0.0.4</version>
+@@ -23,7 +30,7 @@
+       </plugin>
+       <plugin>
+         <artifactId>maven-shade-plugin</artifactId>
+-        <version>3.2.1</version>
++        <version>3.2.4</version>
+         <executions>
+           <execution>
+             <phase>package</phase>
+@@ -42,11 +49,84 @@
+       </plugin>
+     </plugins>
+   </build>
++  <dependencies>
++    <dependency>
++      <groupId>org.junit.jupiter</groupId>
++      <artifactId>junit-jupiter-engine</artifactId>
++      <version>5.7.0</version>
++      <scope>test</scope>
++      <exclusions>
++        <exclusion>
++          <artifactId>apiguardian-api</artifactId>
++          <groupId>org.apiguardian</groupId>
++        </exclusion>
++        <exclusion>
++          <artifactId>junit-platform-engine</artifactId>
++          <groupId>org.junit.platform</groupId>
++        </exclusion>
++        <exclusion>
++          <artifactId>junit-jupiter-api</artifactId>
++          <groupId>org.junit.jupiter</groupId>
++        </exclusion>
++      </exclusions>
++    </dependency>
++    <dependency>
++      <groupId>org.junit.jupiter</groupId>
++      <artifactId>junit-jupiter-params</artifactId>
++      <version>5.7.0</version>
++      <scope>test</scope>
++      <exclusions>
++        <exclusion>
++          <artifactId>apiguardian-api</artifactId>
++          <groupId>org.apiguardian</groupId>
++        </exclusion>
++        <exclusion>
++          <artifactId>junit-jupiter-api</artifactId>
++          <groupId>org.junit.jupiter</groupId>
++        </exclusion>
++      </exclusions>
++    </dependency>
++    <dependency>
++      <groupId>org.hamcrest</groupId>
++      <artifactId>hamcrest</artifactId>
++      <version>2.2</version>
++      <scope>test</scope>
++    </dependency>
++    <dependency>
++      <groupId>org.mockito</groupId>
++      <artifactId>mockito-junit-jupiter</artifactId>
++      <version>3.11.2</version>
++      <scope>test</scope>
++      <exclusions>
++        <exclusion>
++          <artifactId>mockito-core</artifactId>
++          <groupId>org.mockito</groupId>
++        </exclusion>
++        <exclusion>
++          <artifactId>junit-jupiter-api</artifactId>
++          <groupId>org.junit.jupiter</groupId>
++        </exclusion>
++      </exclusions>
++    </dependency>
++    <dependency>
++      <groupId>org.mockito</groupId>
++      <artifactId>mockito-inline</artifactId>
++      <version>3.11.2</version>
++      <scope>test</scope>
++      <exclusions>
++        <exclusion>
++          <artifactId>mockito-core</artifactId>
++          <groupId>org.mockito</groupId>
++        </exclusion>
++      </exclusions>
++    </dependency>
++  </dependencies>
+   <properties>
+     <maven.compiler.target>11</maven.compiler.target>
+     <maven.compiler.source>11</maven.compiler.source>
+     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+     <javafx.version>15.0.1</javafx.version>
++    <junit.version>5.7.0</junit.version>
+     <jackson.version>2.13.1</jackson.version>
+   </properties>
+ </project>
+Index: src/main/java/pl/com/danielsokanski/Messages.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/pl/com/danielsokanski/Messages.java b/src/main/java/pl/com/danielsokanski/Messages.java
+--- a/src/main/java/pl/com/danielsokanski/Messages.java	(revision 15880329c38db57844acfed378c90a2c7c530361)
++++ b/src/main/java/pl/com/danielsokanski/Messages.java	(date 1662998327232)
+@@ -3,6 +3,6 @@
+ public class Messages {
+     public static final String TITLE = "POGODA NA WAKACJE";
+     public static final String BLAD = "BLAD PRZY WPISYWANIU LUB MIASTO NIE ISTNIEJE";
+-    public static final String API_KEY = "9f50290acb8f2bf479a301a08f4d725b";
++    public static final String API_KEY = "123";
+     public static final String PROBLEM_JSON = "BRAK REZULTATÓW Z SERWERA";
+ }
